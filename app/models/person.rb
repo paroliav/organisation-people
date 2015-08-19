@@ -7,13 +7,15 @@ class Person < ActiveRecord::Base
     Person.joins(:organisation)
   end
 
+  def self.people_api
+    Person.eager_load(:organisation)
+    .select('people.id as id, first_name, organisations.title, organisations.location')
+  end
+
   def self.search(conditions)
     if conditions.empty?
       Person.joins(:organisation)
     else
-      # if conditions.try(:[], :title)
-      #   Person.joins(:organisation).where('lower(organisations.title) like ?', conditions[:title])
-      # else
         where = ''
         conditions.each do |key, value|
           where+= ' or ' unless where.empty?
@@ -24,11 +26,9 @@ class Person < ActiveRecord::Base
           end
         end
 
-        p ">>>>>>>>>>>>>>>>>> where #{where}  LLLLLL"
         Person
         .joins(:organisation)
         .where(where,conditions)
-      # end
     end
   end
 

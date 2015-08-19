@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   post '/search' => 'people#search'
 
   namespace :api, constraints: { format: 'json' } do
-      resources :people
+    namespace :v1 do
+      resources :people_api
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
